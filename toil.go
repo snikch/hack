@@ -7,30 +7,33 @@ import (
 	"path"
 )
 func main () {
-
-	p := os.Getenv("PATH")
-
-	fmt.Println(fmt.Sprintf("Path: %s", p))
-	content, err := ioutil.ReadFile("toil.json")
-
-	if err != nil {
-		fmt.Println(fmt.Sprintf("Could not %s", err))
-		return
-	}
-
+	command := os.Args[1]
 	project := &Project{}
-	jsonToProject(content, project)
 
-	dir, err := os.Getwd()
-	if err != nil{
-		panic(err)
+	switch command {
+		default:
+			content, err := ioutil.ReadFile("toil.json")
+
+			if err != nil {
+				fmt.Println(fmt.Sprintf("Could not %s", err))
+				return
+			}
+
+			jsonToProject(content, project)
+
+			dir, err := os.Getwd()
+			if err != nil {
+				panic(err)
+			}
+
+			name := path.Base(dir)
+			project.name = name
+
+			runner := &Runner{project: project}
+			runner.Start()
+		case "init":
+			project.Write()
+		case "add"
 	}
-
-	name := path.Base(dir)
-	project.name = name
-
-	runner := &Runner{project: project}
-
-	runner.Start()
-	fmt.Println(project, runner)
+	//fmt.Println(project, runner)
 }

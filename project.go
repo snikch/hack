@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"os"
 )
 
 type Process struct{
@@ -9,10 +11,30 @@ type Process struct{
 	command string
 	color string
 }
+
 type Project struct{
 	name string
 	global map[string]Process
 	local map[string]Process
+}
+
+func (p *Project) Write() (err error) {
+	var f *os.File
+	f, err = os.OpenFile("toil.json", os.O_RDWR | os.O_CREATE | os.O_TRUNC, 0666)
+	if err != nil {
+		panic(err)
+    }
+
+    defer f.Close()
+
+	enc := json.NewEncoder(f)
+	err = enc.Encode(p)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+    return
 }
 
 func jsonToProject(content []byte, project *Project) {
