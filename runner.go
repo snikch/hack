@@ -39,10 +39,9 @@ func (r *Runner) Run(in <-chan Process, out chan<- string, wg *sync.WaitGroup) {
 		var commands []string
 		commands = strings.Split(process.command, " ")
 
-		var program string
 		var args []string
 
-		program = commands[0]
+		program := commands[0]
 		if(len(commands) > 1){
 			args = append(commands[:0], commands[1:]...)
 		}else{
@@ -52,15 +51,15 @@ func (r *Runner) Run(in <-chan Process, out chan<- string, wg *sync.WaitGroup) {
 		cmd := exec.Command(program, args...)
 
 		stdout, err := cmd.StdoutPipe()
-        if err != nil {
-            fmt.Println(err)
-        }
+		if err != nil {
+			fmt.Println(err)
+		}
 
 		err = cmd.Start()
-        if err != nil {
-            fmt.Println(err)
-        }
-        ch := make(chan string)
+		if err != nil {
+			fmt.Println(err)
+		}
+		ch := make(chan string)
 		quit := make(chan bool)
 		go func() {
 			buf := make([]byte, 1024)
@@ -82,21 +81,18 @@ func (r *Runner) Run(in <-chan Process, out chan<- string, wg *sync.WaitGroup) {
 		loop:
 		for {
 			select {
-			case lines, ok := <-ch:
-				if !ok {
-					break loop
-				}
-				//fmt.Print(s)
-				for _, line := range strings.Split(lines, "\n") {
-					if(line == ""){
-						continue
+				case lines, ok := <-ch:
+					if !ok {
+						break loop
 					}
-					terminal.Stderr.
+					for _, line := range strings.Split(lines, "\n") {
+						if(line == ""){
+							continue
+						}
+						terminal.Stderr.
 						Color(process.color).Print(fmt.Sprintf("[%s] ", process.name)).
 						Reset().Print(line).Nl()
-				}
-			//case <-quit:
-			//	cmd.Process.Kill()
+					}
 			}
 		}
 
