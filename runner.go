@@ -72,7 +72,6 @@ func (r *Runner) Run(in <-chan Process, out chan<- string, wg *sync.WaitGroup) {
 					break
 				}
 			}
-			fmt.Println("Goroutine finished")
 			close(ch)
 		}()
 
