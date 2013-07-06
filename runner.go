@@ -3,11 +3,8 @@ package main
 import (
 	"os/exec"
 	"github.com/wsxiaoys/terminal"
-	//"io"
-	//"os"
 	"time"
 	"fmt"
-	//"bytes"
 	"strings"
 	"sync"
 )
