@@ -7,6 +7,9 @@ Run multiple processes, defined by a simple json file, with a single log stream.
 
 ## Quick Start
 ### Install
+A binary for Mac OS x64 is included in the [releases section](https://github.com/snikch/toil/releases).
+
+#### From Source
 You’ll need [Go installed](http://golang.org/doc/install).
 
 ```
