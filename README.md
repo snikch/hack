@@ -26,7 +26,20 @@ toil add rails "bundle exec rails server"
 toil
 ```
 
+### Registering Projects
+Once registered, you can run your project from anywhere.
+
+```
+toil register my_project
+
+cd any/where/you/want
+
+toil on my_project
+```
+
 ## Commands
+
+When no command is supplied, it will run the project in the current directory.
 
 ### init
 Initialises the `toil.json` file.
@@ -62,9 +75,47 @@ toil list
 ➜ Local:
 ➜  - rails: bundle exec rails s -p 3001
 ➜  - redis: redis-server
- ```
+```
+
+### register [*name]
+Registers the current working directory under the supplied name. If no name is supplied, it will register it under the current folder name.
+
+```
+toil register
+✔ Registered servd at /Users/mal/Code/github/servd
+
+toil register FOO
+✔ Registered FOO at /Users/mal/Code/github/servd
+```
+
+### deregister [*name]
+Deregisters the project with the supplied name. If no name is supplied it will deregister the project based on the current folder name.
+
+```
+toil deregister
+✔ servd deregistered
+
+toil deregister FOO
+✔ FOO deregistered
+```
+
+### projects
+Lists the registered projects.
+
+
+```
+toil projects
+✔ 2 projects registered
+✔ FOO: /Users/mal/Code/github/servd
+✔ servd: /Users/mal/Code/github/servd
+```
+
+### on [name]
+Run the previously registered project `name`. Once registered, you can run a project from any directory.
+
+```
+toil on servd
+```
 
 ## TODO
-* `toil register [project name]`
-* `toil on [project name]`
 *  Handle global processes when starting another instance of toil

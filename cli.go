@@ -42,6 +42,35 @@ func (c *Cli) run() {
 			runner := &Runner{project: c.Project}
 			runner.Start()
 
+		// Run a previously registered project
+		case "on":
+			if len(os.Args) < 2 {
+				c.PrintError(errors.New("Usage: toil on [name]"))
+				return
+			}
+			settings, err := LoadSettings()
+			if err != nil {
+				panic(err)
+			}
+
+			name := os.Args[2]
+			dir, exists := settings.Projects[name]
+			if !exists {
+				c.PrintError(errors.New(fmt.Sprintf("%s not registered", name)))
+				return
+			}
+
+			c.Project.dir = dir
+
+			err = loadProject(dir + "/toil.json", c.Project)
+			if err != nil {
+				c.PrintError(err)
+				return
+			}
+
+			runner := &Runner{project: c.Project}
+			runner.Start()
+
 		// Generate an empty toilfile
 		case "init":
 			_, err := ioutil.ReadFile("toil.json")
@@ -80,7 +109,6 @@ func (c *Cli) run() {
 			}else{
 				c.PrintSuccess(fmt.Sprintf("Added %s", name))
 			}
-			return
 
 		// Remove a process
 		case "rm":
@@ -106,7 +134,6 @@ func (c *Cli) run() {
 			}
 
 			c.PrintSuccess(fmt.Sprintf("Removed %s", name))
-			return
 
 		// List all processes
 		case "list":
@@ -123,18 +150,65 @@ func (c *Cli) run() {
 					fmt.Println(fmt.Sprintf(" - %s: %s", process.name, process.command))
 				}
 			}
-			return
 
 		// Register the current toilfile globally
 		case "register":
-			panic(errors.New("TODO: Register not yet implemented"))
-			return
+			settings, err := LoadSettings()
+			if err != nil {
+				panic(err)
+			}
+			dir, _ := os.Getwd()
+			var name string
+			if len(os.Args) > 2 {
+				name = os.Args[2]
+			}else{
+				name = path.Base(dir)
+			}
+			settings.Projects[name] = dir
+			settings.Write()
+
+			c.PrintSuccess(fmt.Sprintf("Registered %s at %s", name, dir))
+
+		case "deregister":
+			settings, err := LoadSettings()
+			if err != nil {
+				panic(err)
+			}
+			dir, _ := os.Getwd()
+			var name string
+			if len(os.Args) > 2 {
+				name = os.Args[2]
+			}else{
+				name = path.Base(dir)
+			}
+			_, exists := settings.Projects[name]
+			if !exists {
+				c.PrintError(errors.New(fmt.Sprintf("%s not registered", name)))
+				return
+			}
+
+			delete(settings.Projects, name)
+			settings.Write()
+			c.PrintSuccess(fmt.Sprintf("%s deregistered", name))
+
+		// List all registered projects
+		case "projects":
+			settings, err := LoadSettings()
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println(fmt.Sprintf("%d projects registered", len(settings.Projects)))
+			for name, dir := range settings.Projects {
+				fmt.Println(fmt.Sprintf("%s: %s", name, dir))
+			}
+		default:
+			fmt.Println("For usage, see https://github.com/snikch/toil")
 	}
 }
 
 func (c *Cli) beforeFilter() (err error) {
 	switch c.Command {
-		case "run", "add", "rm", "list":
+		case "run", "add", "rm", "list", "register":
 			err = loadProject("toil.json", c.Project)
 			if err != nil {
 				c.PrintError(err)
