@@ -1,40 +1,40 @@
-toil [Working Title] 
+Hack On
 ====
 
-![Toil](http://dl.dropbox.com/u/3155323/HostedShots/toil.gif)
+![hack](http://dl.dropbox.com/u/3155323/HostedShots/hack.gif)
 
 Run multiple processes, defined by a simple json file, with a single log stream. Super useful for people who change from project to project.
 
 ## Quick Start
 ### Install
-A binary for Mac OS x64 is included in the [releases section](https://github.com/snikch/toil/releases).
+A binary for Mac OS x64 is included in the [releases section](https://github.com/snikch/hack/releases).
 
 #### From Source
 You’ll need [Go installed](http://golang.org/doc/install).
 
 ```
-go get github.com/snikch/toil
+go get github.com/snikch/hack
 ```
 
 ### Running
 Navigate to your project root.
 
 ```
-toil init
-toil add redis redis-server
-toil add rails "bundle exec rails server"
-toil
+hack init
+hack add redis redis-server
+hack add rails "bundle exec rails server"
+hack
 ```
 
 ### Registering Projects
 Once registered, you can run your project from anywhere.
 
 ```
-toil register my_project
+hack register my_project
 
 cd any/where/you/want
 
-toil on my_project
+hack on my_project
 ```
 
 ## Commands
@@ -42,16 +42,16 @@ toil on my_project
 When no command is supplied, it will run the project in the current directory.
 
 ### init
-Initialises the `toil.json` file.
+Initialises the `hack.json` file.
 
 ### add [name] [command]
 Adds the given command with the given name. Use quotes for commands with spaces.
 
 ```
-toil add redis redis-server
+hack add redis redis-server
 ➜ ✔ Added redis
 
-toil add rails "bundle exec rails server"
+hack add rails "bundle exec rails server"
 ➜ ✔ Added rails
 ```
 
@@ -59,10 +59,10 @@ toil add rails "bundle exec rails server"
 Removes the command with the given name.
 
 ```
-toil rm potato
+hack rm potato
 ➜ ✘ No process named potato
 
-toil rm rails
+hack rm rails
 ➜ ✔ Removed rails
 ```
 
@@ -70,8 +70,8 @@ toil rm rails
 Lists the current processes.
 
 ```
-toil list
-➜ 2 processes in toilfile
+hack list
+➜ 2 processes in hackfile
 ➜ Local:
 ➜  - rails: bundle exec rails s -p 3001
 ➜  - redis: redis-server
@@ -81,21 +81,28 @@ toil list
 Registers the current working directory under the supplied name. If no name is supplied, it will register it under the current folder name.
 
 ```
-toil register
+hack register
 ✔ Registered servd at /Users/mal/Code/github/servd
 
-toil register FOO
+hack register FOO
 ✔ Registered FOO at /Users/mal/Code/github/servd
+```
+
+### on [name]
+Run the previously registered project `name`. Once registered, you can run a project from any directory.
+
+```
+hack on servd
 ```
 
 ### deregister [*name]
 Deregisters the project with the supplied name. If no name is supplied it will deregister the project based on the current folder name.
 
 ```
-toil deregister
+hack deregister
 ✔ servd deregistered
 
-toil deregister FOO
+hack deregister FOO
 ✔ FOO deregistered
 ```
 
@@ -104,18 +111,11 @@ Lists the registered projects.
 
 
 ```
-toil projects
+hack projects
 ✔ 2 projects registered
 ✔ FOO: /Users/mal/Code/github/servd
 ✔ servd: /Users/mal/Code/github/servd
 ```
 
-### on [name]
-Run the previously registered project `name`. Once registered, you can run a project from any directory.
-
-```
-toil on servd
-```
-
 ## TODO
-*  Handle global processes when starting another instance of toil
+*  Handle global processes when starting another instance of hack

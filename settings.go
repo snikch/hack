@@ -14,9 +14,9 @@ type Settings struct {
 
 func LoadSettings() (settings *Settings, err error) {
 	homedir := HomeDir()
-	content, err := ioutil.ReadFile(homedir + "/.toil/config")
+	content, err := ioutil.ReadFile(homedir + "/.hack/config")
 
-	// Lazily create toil config dir and retry
+	// Lazily create hack config dir and retry
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return
@@ -43,13 +43,13 @@ func (s *Settings) Write() (err error) {
 	}
 
 	// Create the config dir (no-op)
-	err = os.MkdirAll(homedir + "/.toil", 0700)
+	err = os.MkdirAll(homedir + "/.hack", 0700)
 	if err != nil {
 		return
 	}
 
 	// Write to the file
-    err = ioutil.WriteFile(homedir + "/.toil/config", b, 0700)
+    err = ioutil.WriteFile(homedir + "/.hack/config", b, 0700)
 	if err != nil {
 		return
 	}

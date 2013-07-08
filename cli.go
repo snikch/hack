@@ -29,7 +29,7 @@ func (c *Cli) run() {
 		return;
 	}
 	switch c.Command {
-		// Run the toil processes
+		// Run the hack processes
 		case "run":
 			dir, err := os.Getwd()
 			if err != nil {
@@ -45,7 +45,7 @@ func (c *Cli) run() {
 		// Run a previously registered project
 		case "on":
 			if len(os.Args) < 2 {
-				c.PrintError(errors.New("Usage: toil on [name]"))
+				c.PrintError(errors.New("Usage: hack on [name]"))
 				return
 			}
 			settings, err := LoadSettings()
@@ -62,7 +62,7 @@ func (c *Cli) run() {
 
 			c.Project.dir = dir
 
-			err = loadProject(dir + "/toil.json", c.Project)
+			err = loadProject(dir + "/hack.json", c.Project)
 			if err != nil {
 				c.PrintError(err)
 				return
@@ -71,11 +71,11 @@ func (c *Cli) run() {
 			runner := &Runner{project: c.Project}
 			runner.Start()
 
-		// Generate an empty toilfile
+		// Generate an empty hack file
 		case "init":
-			_, err := ioutil.ReadFile("toil.json")
+			_, err := ioutil.ReadFile("hack.json")
 			if err == nil {
-				c.PrintError(errors.New("Toilfile exists"))
+				c.PrintError(errors.New("Hack file exists"))
 				return
 			}
 			err = c.Project.Write()
@@ -83,12 +83,12 @@ func (c *Cli) run() {
 				c.PrintError(err)
 				return
 			}
-			c.PrintSuccess("Initialized toilfile")
+			c.PrintSuccess("Initialized hack file")
 
 		// Add a process
 		case "add":
 			if len(os.Args) < 4 {
-				c.PrintError(errors.New("Usage: toil add [name] [command]"))
+				c.PrintError(errors.New("Usage: hack add [name] [command]"))
 				return
 			}
 
@@ -113,7 +113,7 @@ func (c *Cli) run() {
 		// Remove a process
 		case "rm":
 			if len(os.Args) < 3 {
-				c.PrintError(errors.New("Usage: toil rm [name]"))
+				c.PrintError(errors.New("Usage: hack rm [name]"))
 				return
 			}
 
@@ -137,7 +137,7 @@ func (c *Cli) run() {
 
 		// List all processes
 		case "list":
-			fmt.Println(fmt.Sprintf("%d processes in toilfile", c.Project.Size()))
+			fmt.Println(fmt.Sprintf("%d processes in hack file", c.Project.Size()))
 			if len(c.Project.local) > 0 {
 				fmt.Println("Local:")
 				for _, process := range c.Project.local {
@@ -151,7 +151,7 @@ func (c *Cli) run() {
 				}
 			}
 
-		// Register the current toilfile globally
+		// Register the current hack file globally
 		case "register":
 			settings, err := LoadSettings()
 			if err != nil {
@@ -202,14 +202,14 @@ func (c *Cli) run() {
 				fmt.Println(fmt.Sprintf("%s: %s", name, dir))
 			}
 		default:
-			fmt.Println("For usage, see https://github.com/snikch/toil")
+			fmt.Println("For usage, see https://github.com/snikch/hack")
 	}
 }
 
 func (c *Cli) beforeFilter() (err error) {
 	switch c.Command {
 		case "run", "add", "rm", "list", "register":
-			err = loadProject("toil.json", c.Project)
+			err = loadProject("hack.json", c.Project)
 			if err != nil {
 				c.PrintError(err)
 			}

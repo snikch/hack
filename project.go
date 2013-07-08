@@ -30,7 +30,7 @@ type ExportableProject struct{
 func (p *Project) Write() (err error) {
 	var f *os.File
 
-	f, err = os.OpenFile("toil.json", os.O_RDWR | os.O_CREATE | os.O_TRUNC, 0666)
+	f, err = os.OpenFile("hack.json", os.O_RDWR | os.O_CREATE | os.O_TRUNC, 0666)
 	if err != nil {
 		return
     }
