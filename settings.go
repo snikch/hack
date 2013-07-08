@@ -16,7 +16,6 @@ func LoadSettings() (settings *Settings, err error) {
 	homedir := HomeDir()
 	content, err := ioutil.ReadFile(homedir + "/.hack/config")
 
-	// Lazily create hack config dir and retry
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return
