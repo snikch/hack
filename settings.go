@@ -48,7 +48,7 @@ func (s *Settings) Write() (err error) {
 	}
 
 	// Write to the file
-    err = ioutil.WriteFile(homedir + "/.hack/config", b, 0700)
+	err = ioutil.WriteFile(homedir + "/.hack/config", b, 0700)
 	if err != nil {
 		return
 	}
