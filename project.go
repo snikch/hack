@@ -10,12 +10,14 @@ type Process struct{
 	name string
 	command string
 	color string
+	dir string
 }
 
 type Project struct{
 	name string
 	global map[string]Process
 	local map[string]Process
+	dir string
 }
 
 type ExportableProject struct{
@@ -114,7 +116,7 @@ func jsonToProject(content []byte, project *Project) {
 
 	project.local = make(map[string]Process, len(local))
 	for name, command := range local {
-		project.local[name] = Process{name, command, colors[count]}
+		project.local[name] = Process{name, command, colors[count], project.dir}
 		count++
 		if(count > numColors){
 			count = 0
@@ -123,7 +125,7 @@ func jsonToProject(content []byte, project *Project) {
 
 	project.global = make(map[string]Process, len(global))
 	for name, command := range global {
-		project.global[name] = Process{name, command, colors[count]}
+		project.global[name] = Process{name, command, colors[count], project.dir}
 		if(count > numColors){
 			count = 0
 		}

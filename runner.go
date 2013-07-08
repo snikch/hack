@@ -40,7 +40,6 @@ func (r *Runner) Run(in <-chan Process, out chan<- string, wg *sync.WaitGroup) {
 		commands = strings.Split(process.command, " ")
 
 		var args []string
-
 		program := commands[0]
 		if(len(commands) > 1){
 			args = append(commands[:0], commands[1:]...)
@@ -49,6 +48,10 @@ func (r *Runner) Run(in <-chan Process, out chan<- string, wg *sync.WaitGroup) {
 		}
 
 		cmd := exec.Command(program, args...)
+
+		if process.dir != "" {
+			cmd.Dir = process.dir
+		}
 
 		stdout, err := cmd.StdoutPipe()
 		if err != nil {
