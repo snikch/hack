@@ -39,6 +39,7 @@ func (c *Cli) run() {
 			name := path.Base(dir)
 			c.Project.name = name
 
+			fmt.Println(fmt.Sprintf("Starting project %s", name))
 			runner := &Runner{project: c.Project}
 			runner.Start()
 
@@ -68,6 +69,7 @@ func (c *Cli) run() {
 				return
 			}
 
+			fmt.Println(fmt.Sprintf("Starting project %s", c.Project.name))
 			runner := &Runner{project: c.Project}
 			runner.Start()
 
