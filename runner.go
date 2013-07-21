@@ -58,24 +58,43 @@ func (r *Runner) Run(in <-chan Process, out chan<- string, wg *sync.WaitGroup) {
 			fmt.Println(err)
 		}
 
+		stderr, err := cmd.StderrPipe()
+		if err != nil {
+			fmt.Println(err)
+		}
+
 		err = cmd.Start()
 		if err != nil {
 			fmt.Println(err)
 		}
-		ch := make(chan string)
+		stdoutCh := make(chan string)
+		stderrCh := make(chan string)
 		quit := make(chan bool)
 		go func() {
 			buf := make([]byte, 1024)
 			for {
 				n, err := stdout.Read(buf)
 				if n != 0 {
-					ch <- string(buf[:n])
+					stdoutCh <- string(buf[:n])
 				}
 				if err != nil {
 					break
 				}
 			}
-			close(ch)
+			close(stdoutCh)
+		}()
+		go func() {
+			buf := make([]byte, 1024)
+			for {
+				n, err := stderr.Read(buf)
+				if n != 0 {
+					stderrCh <- string(buf[:n])
+				}
+				if err != nil {
+					break
+				}
+			}
+			close(stderrCh)
 		}()
 
 		time.AfterFunc(time.Second, func() { quit <- true })
@@ -83,7 +102,19 @@ func (r *Runner) Run(in <-chan Process, out chan<- string, wg *sync.WaitGroup) {
 		loop:
 		for {
 			select {
-				case lines, ok := <-ch:
+				case lines, ok := <-stdoutCh:
+					if !ok {
+						break loop
+					}
+					for _, line := range strings.Split(lines, "\n") {
+						if(line == ""){
+							continue
+						}
+						terminal.Stdout.
+						Color(process.color).Print(fmt.Sprintf("[%s] ", process.name)).
+						Reset().Print(line).Nl()
+					}
+				case lines, ok := <-stderrCh:
 					if !ok {
 						break loop
 					}
