@@ -118,7 +118,7 @@ func jsonToProject(content []byte, project *Project) {
 	for name, command := range local {
 		project.local[name] = Process{name, command, colors[count], project.dir}
 		count++
-		if(count > numColors){
+		if(count >= numColors){
 			count = 0
 		}
 	}
